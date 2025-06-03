@@ -48,7 +48,7 @@ public class GerenciadorMissoes : MonoBehaviour
     {
         InicializarBlocosMissoes();
         VerificarMissoes();
-        CarregarEstadoMissaoAtiva(); // Carrega o estado da missão ativa
+        CarregarEstadoMissaoAtiva();
         AtualizarUI();
     }
 
