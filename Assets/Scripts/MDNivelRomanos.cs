@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class MDNivelRomanos : MonoBehaviour
 {
@@ -12,11 +13,10 @@ public class MDNivelRomanos : MonoBehaviour
     public GameObject b100, b10, b1;
     public int valorTotal;
     int numeroGerado = 0;
-    int numeroGerado1 = 0;
-    int numeroGerado2 = 0;
     int sorteio = 0;
     int tentativas, fases, nAtual; 
-    private HashSet<int> numerosGerados = new HashSet<int>(); // armazena elementos únicos sem duplicatas, escolhi o tipo int
+    private static HashSet<int> numerosGeradosGlobal = new HashSet<int>();
+    private static List<int> listaPossivel = new List<int>();
     Text geradoText;
 
     private static readonly string[] unidades = { "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
@@ -36,100 +36,75 @@ public class MDNivelRomanos : MonoBehaviour
     }
 
    void AtualizarTextoGerado()
-{
-    if (nAtual < 4)
     {
-        string numeroEmRomanos = ConverterParaRomano(numeroGerado);
-        geradoText.text = "VALOR GERADO: " + numeroEmRomanos;
-    }
-    else if (nAtual >= 4 && nAtual <= 6)
-    {
-        string romano1 = ConverterParaRomano(numeroGerado1);
-        string romano2 = ConverterParaRomano(numeroGerado2);
-        geradoText.text = "VALOR GERADO: " + romano1 + " + " + romano2;
-    }
-    else if (nAtual >= 7 && nAtual <= 9)
-    {
-        string romano1 = ConverterParaRomano(numeroGerado1);
-        string romano2 = ConverterParaRomano(numeroGerado2);
-        geradoText.text = "VALOR GERADO: " + romano1 + " - " + romano2;
-        VisualizarNumero(numeroGerado1);
-    }
-    else if (nAtual >= 10 && nAtual <= 12)
-    {
-        string romano1 = ConverterParaRomano(numeroGerado1);
-        string romano2 = ConverterParaRomano(numeroGerado2);
-        if (sorteio == 0)
+        if (nAtual <= 10)
         {
-            geradoText.text = "VALOR GERADO: " + romano1 + " - " + romano2;
-            VisualizarNumero(numeroGerado1);
+            string numeroEmRomanos = ConverterParaRomano(numeroGerado);
+            geradoText.text = "VALOR GERADO: " + numeroEmRomanos;
         }
-        else if (sorteio == 1)
-        {
-            geradoText.text = "VALOR GERADO: " + romano1 + " + " + romano2;
-        }
-        else
-        {
-            string romanoFinal = ConverterParaRomano(numeroGerado);
-            geradoText.text = "VALOR GERADO: " + romanoFinal;
-        }
+    
     }
-}
-
 
     int GerarNumero()
     {
         switch (nAtual)
         {
             case 1:
-                GerarNumeroUnicoParaRomanos();
-                break;
             case 2:
-                numeroGerado = GerarNumeroUnico(10, 100);
-                break;
             case 3:
-                numeroGerado = GerarNumeroUnico(100, 1000);
-                break;
             case 4:
             case 5:
             case 6:
-                GerarNumeroAdicao();
-                break;
             case 7:
             case 8:
             case 9:
-                GerarNumeroSubtracao();
-                break;
             case 10:
             case 11:
             case 12:
-                GerarNumeroSorteado();
+                GerarNumeroParaRomanos(); // Usa a função corrigida
                 break;
         }
         return numeroGerado;
     }
-
-    void GerarNumeroUnicoParaRomanos()
+    void GerarNumeroParaRomanos()
     {
-        do
+        if (nAtual >= 1 && nAtual <= 3)
         {
-            if (nAtual == 1)
-            {
-                numeroGerado = Random.Range(1, 10);
-            }
-            else if (nAtual == 2)
-            {
-                numeroGerado = Random.Range(10, 100);
-            }
-            else if (nAtual == 3)
-            {
-                numeroGerado = Random.Range(100, 1000);
-            }
-         } while (numerosGerados.Contains(numeroGerado));
-        numerosGerados.Add(numeroGerado);
+            listaPossivel = Enumerable.Range(1, 9).ToList(); // 1 a 9
+        }
+        else if (nAtual >= 4 && nAtual <= 6)
+        {
+            listaPossivel = new List<int> {10, 20, 30, 40, 50, 60, 70, 80, 90}; // dezenas exatas
+        }
+        else if (nAtual >= 7 && nAtual <= 9)
+        {
+            listaPossivel = new List<int> {100, 200, 300, 400, 500, 600, 700, 800, 900}; // centenas exatas
+        }
+        else if (nAtual == 10)
+        {
+            numeroGerado = Random.Range(1, 1000);
+            return;
+        }
+
+        var disponiveis = listaPossivel.Except(numerosGeradosGlobal).ToList();
+
+        if (disponiveis.Count > 0)
+        {
+            int index = Random.Range(0, disponiveis.Count);
+            numeroGerado = disponiveis[index];
+            numerosGeradosGlobal.Add(numeroGerado);
+        }
+        else
+        {
+            Debug.LogWarning("Todos os números possíveis já foram usados em todos os níveis.");
+            numeroGerado = -1;
+        }
+        
+        Debug.Log("Números já gerados: " + string.Join(", ", numerosGeradosGlobal));
+
     }
 
-     string ConverterParaRomano(int numero)
+    string ConverterParaRomano(int numero)
     {
         if (numero < 1 || numero > 999)
         {
@@ -153,95 +128,6 @@ public class MDNivelRomanos : MonoBehaviour
 
         return resultado;
     }
-
-    int GerarNumeroUnico(int min, int max)
-    {
-        int num;
-        do
-        {
-            num = Random.Range(min, max);
-        } while (numerosGerados.Contains(num));
-        numerosGerados.Add(num);
-        return num;
-    }
-
-   void GerarNumeroAdicao()
-{
-    do
-    {
-        if (nAtual == 4)
-        {
-            numeroGerado1 = Random.Range(1, 10);
-            numeroGerado2 = Random.Range(1, 10);
-        }
-        else if (nAtual == 5)
-        {
-            numeroGerado1 = Random.Range(10, 100);
-            numeroGerado2 = Random.Range(10, 100);
-        }
-        else if (nAtual == 6)
-        {
-            numeroGerado1 = Random.Range(100, 501);
-            numeroGerado2 = Random.Range(100, 500);
-        }
-        numeroGerado = numeroGerado1 + numeroGerado2;
-    } while (numerosGerados.Contains(numeroGerado));
-    numerosGerados.Add(numeroGerado);
-
-    // Converter números para romanos (opcional, se necessário em outro lugar)
-    string romano1 = ConverterParaRomano(numeroGerado1);
-    string romano2 = ConverterParaRomano(numeroGerado2);
-    string resultadoRomano = ConverterParaRomano(numeroGerado);
-
-    Debug.Log($"Adição: {romano1} + {romano2} = {resultadoRomano}");
-}
-
-void GerarNumeroSubtracao()
-{
-    do
-    {
-        if (nAtual == 7)
-        {
-            numeroGerado1 = Random.Range(1, 10);
-            numeroGerado2 = Random.Range(1, 10);
-        }
-        else if (nAtual == 8)
-        {
-            numeroGerado1 = Random.Range(10, 100);
-            numeroGerado2 = Random.Range(10, 100);
-        }
-        else if (nAtual == 9)
-        {
-            numeroGerado1 = Random.Range(100, 1000);
-            numeroGerado2 = Random.Range(100, 1000);
-        }
-        while (numeroGerado1 <= numeroGerado2)
-        {
-            if (nAtual == 7)
-            {
-                numeroGerado2 = Random.Range(1, 10);
-            }
-            else if (nAtual == 8)
-            {
-                numeroGerado2 = Random.Range(10, 100);
-            }
-            else if (nAtual == 9)
-            {
-                numeroGerado2 = Random.Range(100, 500);
-            }
-        }
-        numeroGerado = numeroGerado1 - numeroGerado2;
-    } while (numerosGerados.Contains(numeroGerado));
-    numerosGerados.Add(numeroGerado);
-
-    // Converter números para romanos (opcional, se necessário em outro lugar)
-    string romano1 = ConverterParaRomano(numeroGerado1);
-    string romano2 = ConverterParaRomano(numeroGerado2);
-    string resultadoRomano = ConverterParaRomano(numeroGerado);
-
-    Debug.Log($"Subtração: {romano1} - {romano2} = {resultadoRomano}");
-}
-
     public void Verificar()
     {
         valorTotal = CalcularValorTotal();
@@ -369,37 +255,5 @@ void GerarNumeroSubtracao()
         }
         valorTotal = numero;
         inventoryText.text = "VALOR TOTAL: " + valorTotal.ToString();
-    }
-
-    int GerarNumeroSorteado()
-    {
-        do
-        {
-            sorteio = Random.Range(0, 3); // 0 = subtração, 1 = adição, 2 = representação
-
-            if (sorteio == 0)
-            {
-                numeroGerado1 = Random.Range(1, 1000);
-                numeroGerado2 = Random.Range(1, 1000);
-                while (numeroGerado1 <= numeroGerado2)
-                {
-                    numeroGerado2 = Random.Range(100, 500);
-                }
-                numeroGerado = numeroGerado1 - numeroGerado2;
-            }
-            else if (sorteio == 1)
-            {
-                numeroGerado1 = Random.Range(100, 501);
-                numeroGerado2 = Random.Range(100, 500);
-                numeroGerado = numeroGerado1 + numeroGerado2;
-            }
-            else
-            {
-                numeroGerado = Random.Range(1, 1000);
-            }
-        } while (numerosGerados.Contains(numeroGerado));
-        numerosGerados.Add(numeroGerado);
-
-        return numeroGerado;
     }
 }

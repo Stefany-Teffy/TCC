@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 119c1bd3601648f28a252a6030e067b6, type: 3}
   m_Name: UnityFigmaBridgeSettings
   m_EditorClassIdentifier: 
-  DocumentUrl: https://www.figma.com/design/D2nY7J7hTlxM47nkgDAA5f/telas-finais?node-id=0-1&p=f&t=wHbcLSwYJXLQYNTi-0
+  DocumentUrl: https://www.figma.com/design/D2nY7J7hTlxM47nkgDAA5f/telas-finais?node-id=0-1&p=f&t=s2f8QWgQmIv2FvHy-0
   BuildPrototypeFlow: 1
   RunTimeAssetsScenePath: Assets/Scenes/Figma.unity
   EnableAutoLayout: 0
