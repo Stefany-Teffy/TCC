@@ -81,7 +81,7 @@ public class Placar : MonoBehaviour
         }
          gerenciadorEstrelas.DefinirPorNivel(nAtual, quantidadeEstrelasDesativadas);
 
-        if (nAtual == 1 || nAtual == 4  || nAtual == 7 && quantidadeEstrelasDesativadas <=2)
+        if ((nAtual == 1 || nAtual == 4  || nAtual == 7) && quantidadeEstrelasDesativadas <=2)
         {
             string nomeJogador = GerenciaJogador.instancia.nomeJogador;
             if (nAtual == 1){
@@ -102,7 +102,7 @@ public class Placar : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        if (nAtual == 2 || nAtual == 5 || nAtual == 8 && quantidadeEstrelasDesativadas <=1)
+        if ((nAtual == 2 || nAtual == 5 || nAtual == 8) && quantidadeEstrelasDesativadas <=1)
         {
             string nomeJogador = GerenciaJogador.instancia.nomeJogador;
 
@@ -125,7 +125,7 @@ public class Placar : MonoBehaviour
             
         }
 
-        if (nAtual == 3 || nAtual == 6 || nAtual == 9 && quantidadeEstrelasDesativadas == 0)
+        if ((nAtual == 3 || nAtual == 6 || nAtual == 9) && quantidadeEstrelasDesativadas == 0)
         {
             string nomeJogador = GerenciaJogador.instancia.nomeJogador;
 

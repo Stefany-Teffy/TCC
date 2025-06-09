@@ -43,9 +43,17 @@ public class GerenciadorMissoes : MonoBehaviour
 {
     public List<BlocoMissoes> blocosMissoes = new List<BlocoMissoes>();
     public AudioSource audioSource;
+    string nomeJogador;
 
     void Start()
     {
+        if (GerenciaJogador.instancia == null)
+        {
+            Debug.LogError("GerenciaJogador.instancia não foi encontrado! O GerenciadorMissoes não pode funcionar.");
+            return;
+        }
+        nomeJogador = GerenciaJogador.instancia.nomeJogador;
+
         InicializarBlocosMissoes();
         VerificarMissoes();
         CarregarEstadoMissaoAtiva();
@@ -54,7 +62,6 @@ public class GerenciadorMissoes : MonoBehaviour
 
     private void InicializarBlocosMissoes()
     {
-        string nomeJogador = GerenciaJogador.instancia.nomeJogador;
         Debug.Log($"Inicializando blocos de missões para o jogador: {nomeJogador}");
 
         if (blocosMissoes.Count > 0)
@@ -182,33 +189,34 @@ public class GerenciadorMissoes : MonoBehaviour
         }
     }
 
-    private void CarregarEstadoMissaoAtiva()
+  private void CarregarEstadoMissaoAtiva()
     {
         foreach (var bloco in blocosMissoes)
         {
-            string chaveMissaoAtiva = $"MissaoAtiva_{bloco.nomeBloco}";
-            if (PlayerPrefs.HasKey(chaveMissaoAtiva))
+            string chaveMissaoAtiva = $"MissaoAtiva_{bloco.nomeBloco}_{nomeJogador}";
+            string chaveBlocoConcluido = $"Bloco{blocosMissoes.IndexOf(bloco) + 1}_Concluido_{nomeJogador}";
+
+            if (PlayerPrefs.HasKey(chaveBlocoConcluido) && PlayerPrefs.GetInt(chaveBlocoConcluido) == 1)
+            {
+                bloco.missaoAtiva = -1; 
+                Debug.Log($"Bloco {bloco.nomeBloco} já foi concluído para o jogador {nomeJogador}.");
+            }
+            else if (PlayerPrefs.HasKey(chaveMissaoAtiva))
             {
                 bloco.missaoAtiva = PlayerPrefs.GetInt(chaveMissaoAtiva, 0);
-                Debug.Log($"Missão ativa carregada para o bloco {bloco.nomeBloco}: {bloco.missaoAtiva}");
+                Debug.Log($"Missão ativa carregada para o bloco {bloco.nomeBloco} do jogador {nomeJogador}: {bloco.missaoAtiva}");
             }
             else
             {
-                Debug.Log($"Nenhuma missão ativa salva para o bloco {bloco.nomeBloco}. Usando valor padrão.");
+                Debug.Log($"Nenhuma missão ativa salva para o bloco {bloco.nomeBloco} do jogador {nomeJogador}. Usando valor padrão 0.");
                 bloco.missaoAtiva = 0;
-            }
-            string chaveBlocoConcluido = $"Bloco{blocosMissoes.IndexOf(bloco) + 1}_Concluido";
-            if (PlayerPrefs.HasKey(chaveBlocoConcluido) && PlayerPrefs.GetInt(chaveBlocoConcluido) == 1)
-            {
-                bloco.missaoAtiva = -1; // Marca o bloco como concluído
-                Debug.Log($"Bloco {bloco.nomeBloco} já foi concluído.");
             }
         }
     }
 
     private void SalvarEstadoMissaoAtiva(BlocoMissoes bloco)
     {
-        string chaveMissaoAtiva = $"MissaoAtiva_{bloco.nomeBloco}";
+        string chaveMissaoAtiva = $"MissaoAtiva_{bloco.nomeBloco}_{nomeJogador}";
         PlayerPrefs.SetInt(chaveMissaoAtiva, bloco.missaoAtiva);
         PlayerPrefs.Save();
         Debug.Log($"Missão ativa salva para o bloco {bloco.nomeBloco}: {bloco.missaoAtiva}");
