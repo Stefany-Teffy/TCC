@@ -17,7 +17,7 @@ public class changeScenes : MonoBehaviour {
 		cenaAnt();
 		// Carrega a cena especificada em "scenename"
 		SceneManager.LoadScene(scenename, LoadSceneMode.Single);
-
+	    Debug.Log("Clicou");
 	}
 
 	// Método estático para iniciar a cena seguinte (utilizando a classe sem instanciar)
@@ -26,6 +26,7 @@ public class changeScenes : MonoBehaviour {
 	{
 		cenaAnt ();
 		SceneManager.LoadScene (scenename, LoadSceneMode.Single);
+		Debug.Log("Clicou");
 	}
 
 	 // Método estático para armazenar o nome da cena atual
@@ -42,7 +43,6 @@ public class changeScenes : MonoBehaviour {
 	{
 		Application.Quit ();
 	}
-
 
 	void Update()
 	{

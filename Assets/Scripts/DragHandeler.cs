@@ -14,7 +14,6 @@ public class DragHandeler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 	public GameObject b100;
 
 	#region IBeginDragHandler implementation
-
 	public void OnBeginDrag (PointerEventData eventData)
 	{
 		itemBeingDragged = gameObject;

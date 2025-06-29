@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Inicio.unity
     guid: 49b310ae2ea3fc1499d6c782fabc32cd
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Identificacao.unity
     guid: 48ea5baaf64033d49b240817a2efbbf6
   - enabled: 1
@@ -31,7 +31,7 @@ EditorBuildSettings:
     guid: dc00d30580a690a498a6f47c7a934982
   - enabled: 1
     path: Assets/Scenes/Classificacao.unity
-    guid: 85daa2660cd242749b68b352afde5e24
+    guid: e6401537ded0d1548b6f408ae610f4dd
   - enabled: 1
     path: Assets/Scenes/Help.unity
     guid: 0198713c00a87a14a9faef89e0d0a117
@@ -60,3 +60,4 @@ EditorBuildSettings:
     path: Assets/Scenes/Figma.unity
     guid: 5b573085bba571148b319e2a90d09f81
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
