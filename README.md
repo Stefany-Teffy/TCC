@@ -6,6 +6,18 @@ O jogador manipula blocos de unidade (1), dezena (10) e centena (100) por meio d
 
 ---
 
+## Demonstrações
+
+Vídeos demonstrando o funcionamento do jogo:
+
+https://github.com/user-attachments/assets/4100b69d-590b-4030-8d3b-a48ed9aa4f4c
+
+https://github.com/user-attachments/assets/e3c36d7b-798d-4436-a4a3-5d0c9e6ba04b
+
+https://github.com/user-attachments/assets/db7aefb7-129b-4382-9192-63991323c7cf
+
+---
+
 ## Sumário
 
 - [Sobre o Projeto](#sobre-o-projeto)
